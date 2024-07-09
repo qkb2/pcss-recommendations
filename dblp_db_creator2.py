@@ -53,7 +53,7 @@ skipped_bad_doi = 0
 processed_articles_counter = 0
 updated_counter = 0
 
-db_size = 1_000_000
+db_size = 100_000_000
 stop_on_db_size = True
 
 for event, elem in context:

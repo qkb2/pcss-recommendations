@@ -1,8 +1,6 @@
 import sqlite3
 import random
 
-conn = sqlite3.connect('recom_db')
-
 class Article:
     def __init__(self, doi, citations, title) -> None:
         self.doi = doi
@@ -16,10 +14,10 @@ def random_surfer_iter(
         doi = curr_article.doi
         conn.execute(
         f'''
-        UPDATE TABLE surfers
+        UPDATE surfers
         SET score = score + 1
         WHERE doi = ?
-        ''', (doi)
+        ''', (doi,)
         )
         p = random.uniform(0,1)
         if p > d:
@@ -32,7 +30,7 @@ def random_surfer_iter(
         else:
             query = """
             SELECT DISTINCT p.title, p.citations, p.doi
-            FROM publications p
+            FROM publications_citations p
             INNER JOIN authored a1 ON p.doi = a1.doi
             WHERE a1.author IN (
                 SELECT a2.author
@@ -46,8 +44,9 @@ def random_surfer_iter(
             cursor = conn.execute(query, (doi, doi))
             row = cursor.fetchone()
             
-            nbr_article = Article(title=row[2], doi=row[1], citations=row[0])
-            curr_article = nbr_article
+            if row is not None:
+                nbr_article = Article(title=row[0], doi=row[2], citations=int.from_bytes(row[1], byteorder='little'))
+                curr_article = nbr_article
             
 def pagerank_surfer(
     iter_limit_pr: int, conn: sqlite3.Connection, user_context, iter_limit: int, how_many: int):
@@ -56,7 +55,7 @@ def pagerank_surfer(
     
     conn.execute(
     f'''
-    CREATE OR REPLACE TABLE surfers AS
+    CREATE TABLE IF NOT EXISTS surfers AS
     SELECT doi, 0 AS score FROM publications_citations
     '''
     )
@@ -82,8 +81,17 @@ def pagerank_surfer(
     
     i = 0
     for row in rows:
-        if row.doi not in user_context_dois:
-            dois_to_recom.append(row.doi)
+        if row[0] not in user_context_dois:
+            dois_to_recom.append(row[0])
             i += 1
             if i >= how_many:
                 break
+            
+    return dois_to_recom
+            
+            
+conn = sqlite3.connect('recom_db')
+
+user_context = [Article(doi='10.1089/10665270050081478', title='A Greedy Algorithm for Aligning DNA Sequences.', citations=3866)]
+dois_to_recom = pagerank_surfer(iter_limit=300, iter_limit_pr=2, conn=conn, user_context=user_context, how_many=10)
+print(dois_to_recom)
