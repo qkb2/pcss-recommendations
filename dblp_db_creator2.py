@@ -122,3 +122,11 @@ print(f"Total no-data skips: {skipped_no_data_counter}")
 print(f"Total DOI to long skips: {skipped_len_counter}")
 print(f"Total bad DOI skips: {skipped_bad_doi}")
 print(f"Total articles processed: {processed_articles_counter}")
+
+output_file = 'output.txt'
+with open(output_file, 'w') as f:
+    f.write(f"Total successful updates: {updated_counter}\n")
+    f.write(f"Total no-data skips: {skipped_no_data_counter}\n")
+    f.write(f"Total DOI to long skips: {skipped_len_counter}\n")
+    f.write(f"Total bad DOI skips: {skipped_bad_doi}\n")
+    f.write(f"Total articles processed: {processed_articles_counter}\n")

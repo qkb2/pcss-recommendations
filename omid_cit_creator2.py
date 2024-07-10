@@ -108,3 +108,10 @@ print(f"Total OMID updates: {total_omid_updates}")
 print(f"Total citations updates: {total_citations_updates}")
 print(f"Total OMID lines: {lines_read_omid}")
 print(f"Total citations lines: {lines_read_cit}")
+
+output_file = 'output.txt'
+with open(output_file, 'w') as f:
+    f.write(f"Total OMID updates: {total_omid_updates}\n")
+    f.write(f"Total citations updates: {total_citations_updates}\n")
+    f.write(f"Total OMID lines: {lines_read_omid}\n")
+    f.write(f"Total citations lines: {lines_read_cit}\n")
