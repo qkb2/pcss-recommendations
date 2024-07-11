@@ -53,6 +53,8 @@ def pagerank_surfer(
     
     user_context_dois = [c.doi for c in user_context]
     
+    conn.execute("DROP TABLE surfers")
+    
     conn.execute(
     f'''
     CREATE TABLE IF NOT EXISTS surfers AS
@@ -89,9 +91,10 @@ def pagerank_surfer(
             
     return dois_to_recom
             
-            
-conn = sqlite3.connect('recom_db')
 
-user_context = [Article(doi='10.1089/10665270050081478', title='A Greedy Algorithm for Aligning DNA Sequences.', citations=3866)]
-dois_to_recom = pagerank_surfer(iter_limit=300, iter_limit_pr=2, conn=conn, user_context=user_context, how_many=10)
-print(dois_to_recom)
+def init(article: Article, db_name):            
+    conn = sqlite3.connect(db_name)
+
+    user_context = [article]
+    dois_to_recom = pagerank_surfer(iter_limit=300, iter_limit_pr=2, conn=conn, user_context=user_context, how_many=10)
+    print(dois_to_recom)
