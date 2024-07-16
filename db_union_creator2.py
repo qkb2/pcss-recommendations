@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('recom_db')
+conn = sqlite3.connect('recom_db2')
 
 conn.execute(f"""
 CREATE TABLE IF NOT EXISTS publications_citations AS

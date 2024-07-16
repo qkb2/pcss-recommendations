@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('recom_db')
+conn = sqlite3.connect('recom_db2')
 
 # Query all records from the publications_citations table
 cursor = conn.execute("SELECT * FROM publications_citations")
@@ -23,5 +23,5 @@ print(f"Total rows in connected table: {row}")
 conn.close()
 
 output_file = 'output.txt'
-with open(output_file, 'w') as f:
+with open(output_file, 'a') as f:
     f.write(f"Total rows in connected table: {row}\n")

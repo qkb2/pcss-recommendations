@@ -10,7 +10,7 @@ class Article:
 def random_surfer_iter(
     iter_limit: int, conn: sqlite3.Connection, user_context, N: int, d=0.85):
     curr_article = user_context[-1]
-    for i in range(iter_limit):
+    for _ in range(iter_limit):
         doi = curr_article.doi
         conn.execute(
         f'''

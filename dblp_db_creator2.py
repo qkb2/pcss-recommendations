@@ -3,7 +3,7 @@ from lxml import etree as ET
 
 filename = "dblp/dblp.xml"
 dtd_name = "dblp/dblp.dtd"
-main_db_name = "recom_db"
+main_db_name = "recom_db2"
 
 conn = sqlite3.connect(main_db_name)
 
@@ -44,7 +44,8 @@ dblp_record_types_for_publications = ('article',)
 dtd = ET.DTD(dtd_name)
 
 # Get an iterable
-context = ET.iterparse(filename, events=('start', 'end'), tag=dblp_record_types_for_publications, load_dtd=True, resolve_entities=True)
+context = ET.iterparse(
+    filename, events=('start', 'end'), tag=dblp_record_types_for_publications, load_dtd=True, resolve_entities=True)
 
 max_doi_len_found = 0
 skipped_len_counter = 0
@@ -53,7 +54,7 @@ skipped_bad_doi = 0
 processed_articles_counter = 0
 updated_counter = 0
 
-db_size = 100_000_000
+db_size = 100_000
 stop_on_db_size = True
 
 for event, elem in context:
@@ -124,7 +125,7 @@ print(f"Total bad DOI skips: {skipped_bad_doi}")
 print(f"Total articles processed: {processed_articles_counter}")
 
 output_file = 'output.txt'
-with open(output_file, 'w') as f:
+with open(output_file, 'a') as f:
     f.write(f"Total successful updates: {updated_counter}\n")
     f.write(f"Total no-data skips: {skipped_no_data_counter}\n")
     f.write(f"Total DOI to long skips: {skipped_len_counter}\n")
