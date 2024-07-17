@@ -9,12 +9,31 @@ class Article:
       
 # TODO: implement subgraph  
 class SurfGraph:
-    pass
+    def __init__(self, user_context, conn: sqlite3.Connection) -> None:
+        self.graph = dict()
+        self.user_context = user_context
+        self.conn = conn
+        self.article_list = dict()
+        
+    def add_article(self, article: Article):
+        pass
+    
+    def add_author_edge(self, author: str):
+        pass
+    
+    # initialize subgraph to surf thru up to some level d, such that
+    # going from an article in context to any vertex not in user context
+    # requires at most d jumps
+    def initialize_graph(self, depth: int):
+        pass
+    
+    def random_surf_iter(iter_limit: int, d=0.85):
+        pass
 
 def create_subgraph():
     pass
 
-# TODO: change to work for subgraph
+# TODO: change to work for subgraph - rewrite as method
 def random_surfer_iter(
     iter_limit: int, conn: sqlite3.Connection, user_context, N: int, d=0.85):
     curr_article = user_context[-1]
