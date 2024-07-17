@@ -1,0 +1,11 @@
+Total successful updates: 2971424
+Total no-data skips: 28358
+Total DOI to long skips: 7119
+Total bad DOI skips: 527280
+Total articles processed: 3534181
+Total OMID updates: 68917209
+Total citations updates: 74235293
+Total OMID lines: 96860083
+Total citations lines: 74235293
+Total instances of multiple DOIs: 227365
+Total rows in connected table: (1487594,)

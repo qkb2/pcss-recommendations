@@ -2,7 +2,7 @@ import pandas as pd
 import sqlite3
 
 # Connect to SQLite database
-conn = sqlite3.connect('recom_db2')
+conn = sqlite3.connect('recom_db2.db')
 cursor = conn.cursor()
 
 doi_max_len = 50
@@ -11,7 +11,7 @@ omid_max_len = 50
 citations_max_len = 10
 author_max_len = 50
 
-conn.execute("DROP TABLE citations")
+# conn.execute("DROP TABLE citations")
 
 conn.execute(f"""
 CREATE TABLE IF NOT EXISTS citations (
@@ -76,7 +76,7 @@ db_omid_size = 10_000
 db_cit_size = 10_000
 lines_read_limit_omid = 10_000
 lines_read_limit_cit = 10_000
-stop_on_db_size = True
+stop_on_db_size = False
 
 # Initialize counters
 omid_updates_counter = 0

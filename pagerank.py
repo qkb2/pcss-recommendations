@@ -53,7 +53,7 @@ def pagerank_surfer(
     
     user_context_dois = [c.doi for c in user_context]
     
-    conn.execute("DROP TABLE surfers")
+    conn.execute("DROP TABLE IF EXISTS surfers")
     
     conn.execute(
     f'''
@@ -98,3 +98,4 @@ def init(article: Article, db_name):
     user_context = [article]
     dois_to_recom = pagerank_surfer(iter_limit=300, iter_limit_pr=2, conn=conn, user_context=user_context, how_many=10)
     print(dois_to_recom)
+    conn.close()

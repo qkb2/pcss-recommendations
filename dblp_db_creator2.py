@@ -3,7 +3,7 @@ from lxml import etree as ET
 
 filename = "dblp/dblp.xml"
 dtd_name = "dblp/dblp.dtd"
-main_db_name = "recom_db2"
+main_db_name = "recom_db2.db"
 
 conn = sqlite3.connect(main_db_name)
 
@@ -55,7 +55,7 @@ processed_articles_counter = 0
 updated_counter = 0
 
 db_size = 100_000
-stop_on_db_size = True
+stop_on_db_size = False
 
 for event, elem in context:
     if stop_on_db_size and updated_counter >= db_size:
