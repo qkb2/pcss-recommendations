@@ -13,14 +13,15 @@ class SurfGraph:
         self.graph = dict()
         self.user_context = user_context
         self.conn = conn
-        self.article_list = dict()
+        self.article_dict = dict()
         self.depth = depth
         self.new_articles = []
         
     def add_article(self, article: Article):
         self.graph[article.doi] = []
-        self.article_list[article.doi] = article
+        self.article_dict[article.doi] = article
         
+        # TODO: fix query - takes significantly too long to be useful
         query = """
             SELECT DISTINCT p.title, p.citations, p.doi
             FROM publications_citations p
@@ -44,7 +45,7 @@ class SurfGraph:
                 nbr_article = Article(
                     title=row[0], doi=row[2], citations=int.from_bytes(row[1], byteorder='little'))
                 self.graph[article.doi].append(nbr_article)
-                if nbr_article.doi not in self.article_list:
+                if nbr_article.doi not in self.article_dict:
                     self.new_articles.append(nbr_article)
         
     
@@ -60,13 +61,17 @@ class SurfGraph:
             self.new_articles.clear()
             for article in articles_in_this_iter:
                 self.add_article(article)
+                
+        for key in self.graph:
+            neighbors = self.graph[key]
+            neighbors.sort(key=lambda x: x.citations, reverse=True)
     
     def random_surf_iter(self, iter_limit: int, d=0.85):
             curr_article = self.user_context[-1]
             for _ in range(iter_limit):
                 # update rank
                 doi = curr_article.doi
-                self.article_list[doi].rank += 1
+                self.article_dict[doi].rank += 1
                 
                 p = random.uniform(0,1)
                 if p > d:
@@ -77,14 +82,15 @@ class SurfGraph:
                             best_article = article
                     curr_article = best_article
                 else:
-                    # TODO: change to work on graph - jump to neighbor of current article with most citations
-                    
-                    if row is not None:
-                        nbr_article = Article(title=row[0], doi=row[2], citations=int.from_bytes(row[1], byteorder='little'))
-                        curr_article = nbr_article
+                    # jump to neighbor of current article with most citations                   
+                    neighbors = self.graph[doi]
+                    best_neighbor = neighbors[0]
+                    curr_article = best_neighbor
     
     def get_best_results(self, amount: int):
-        pass
+        article_list = list(self.article_dict.values())
+        article_list.sort(key=lambda x: x.rank, reverse=True)
+        return article_list[:amount]
             
 def pagerank_surfer(
     iter_limit_pr: int, conn: sqlite3.Connection, user_context, iter_limit: int, how_many_results: int, sg_depth: int):

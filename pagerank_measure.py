@@ -1,5 +1,5 @@
 import time
-from pagerank import init, Article
+from pagerank_subgraph import init, Article
 
 t0 = time.perf_counter_ns()
 init(Article(
