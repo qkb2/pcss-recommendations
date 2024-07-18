@@ -8,7 +8,6 @@ class Article:
         self.title = title
         self.rank = 0
       
-# TODO: implement subgraph  
 class SurfGraph:
     def __init__(self, user_context, conn: sqlite3.Connection, depth: int) -> None:
         self.graph = dict()
@@ -52,7 +51,7 @@ class SurfGraph:
     # initialize subgraph to surf thru up to some level d, such that
     # going from an article in context to any vertex not in user context
     # requires at most d jumps
-    def initialize_graph(self):
+    def initialize_subgraph(self):
         for article in self.user_context:
             self.add_article(article)
         
@@ -63,61 +62,35 @@ class SurfGraph:
                 self.add_article(article)
     
     def random_surf_iter(self, iter_limit: int, d=0.85):
-        pass
+            curr_article = self.user_context[-1]
+            for _ in range(iter_limit):
+                # update rank
+                doi = curr_article.doi
+                self.article_list[doi].rank += 1
+                
+                p = random.uniform(0,1)
+                if p > d:
+                    # jump (find from context)
+                    best_article = self.user_context[0]
+                    for article in self.user_context:
+                        if article.citations > best_article.citations:
+                            best_article = article
+                    curr_article = best_article
+                else:
+                    # TODO: change to work on graph - jump to neighbor of current article with most citations
+                    
+                    if row is not None:
+                        nbr_article = Article(title=row[0], doi=row[2], citations=int.from_bytes(row[1], byteorder='little'))
+                        curr_article = nbr_article
     
     def get_best_results(self, amount: int):
         pass
-
-def create_subgraph():
-    pass
-
-# TODO: change to work for subgraph - rewrite as method
-def random_surfer_iter(
-    iter_limit: int, conn: sqlite3.Connection, user_context, N: int, d=0.85):
-    curr_article = user_context[-1]
-    for _ in range(iter_limit):
-        doi = curr_article.doi
-        conn.execute(
-        f'''
-        UPDATE surfers
-        SET score = score + 1
-        WHERE doi = ?
-        ''', (doi,)
-        )
-        p = random.uniform(0,1)
-        if p > d:
-            # jump (find from context)
-            best_article = user_context[0]
-            for article in user_context:
-                if article.citations > best_article.citations:
-                    best_article = article
-            curr_article = best_article
-        else:
-            query = """
-            SELECT DISTINCT p.title, p.citations, p.doi
-            FROM publications_citations p
-            INNER JOIN authored a1 ON p.doi = a1.doi
-            WHERE a1.author IN (
-                SELECT a2.author
-                FROM authored a2
-                WHERE a2.doi = ?
-            )
-            AND p.doi <> ?
-            ORDER BY p.citations DESC
-            """
-            
-            cursor = conn.execute(query, (doi, doi))
-            row = cursor.fetchone()
-            
-            if row is not None:
-                nbr_article = Article(title=row[0], doi=row[2], citations=int.from_bytes(row[1], byteorder='little'))
-                curr_article = nbr_article
             
 def pagerank_surfer(
     iter_limit_pr: int, conn: sqlite3.Connection, user_context, iter_limit: int, how_many_results: int, sg_depth: int):
         
-    surf_graph = SurfGraph(user_context, conn)
-    surf_graph.initialize_graph(sg_depth)
+    surf_graph = SurfGraph(user_context, conn, sg_depth)
+    surf_graph.initialize_subgraph()
     
     for _ in range(iter_limit_pr):
         surf_graph.random_surf_iter(iter_limit)
