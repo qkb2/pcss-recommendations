@@ -6,28 +6,66 @@ class Article:
         self.doi = doi
         self.citations = citations
         self.title = title
+        self.rank = 0
       
 # TODO: implement subgraph  
 class SurfGraph:
-    def __init__(self, user_context, conn: sqlite3.Connection) -> None:
+    def __init__(self, user_context, conn: sqlite3.Connection, depth: int) -> None:
         self.graph = dict()
         self.user_context = user_context
         self.conn = conn
         self.article_list = dict()
+        self.depth = depth
+        self.new_articles = []
         
     def add_article(self, article: Article):
-        pass
-    
-    def add_author_edge(self, author: str):
-        pass
+        self.graph[article.doi] = []
+        self.article_list[article.doi] = article
+        
+        query = """
+            SELECT DISTINCT p.title, p.citations, p.doi
+            FROM publications_citations p
+            INNER JOIN authored a1 ON p.doi = a1.doi
+            WHERE a1.author IN (
+                SELECT a2.author
+                FROM authored a2
+                WHERE a2.doi = ?
+            )
+            AND p.doi <> ?
+            ORDER BY p.citations DESC
+            """
+            
+        cursor = self.conn.execute(query, (article.doi, article.doi))
+        
+        rows = cursor.fetchall()
+        
+        # add all author edges
+        if rows is not None:
+            for row in rows:
+                nbr_article = Article(
+                    title=row[0], doi=row[2], citations=int.from_bytes(row[1], byteorder='little'))
+                self.graph[article.doi].append(nbr_article)
+                if nbr_article.doi not in self.article_list:
+                    self.new_articles.append(nbr_article)
+        
     
     # initialize subgraph to surf thru up to some level d, such that
     # going from an article in context to any vertex not in user context
     # requires at most d jumps
-    def initialize_graph(self, depth: int):
+    def initialize_graph(self):
+        for article in self.user_context:
+            self.add_article(article)
+        
+        for _ in range(self.depth):
+            articles_in_this_iter = self.new_articles.copy()
+            self.new_articles.clear()
+            for article in articles_in_this_iter:
+                self.add_article(article)
+    
+    def random_surf_iter(self, iter_limit: int, d=0.85):
         pass
     
-    def random_surf_iter(iter_limit: int, d=0.85):
+    def get_best_results(self, amount: int):
         pass
 
 def create_subgraph():
@@ -76,24 +114,22 @@ def random_surfer_iter(
                 curr_article = nbr_article
             
 def pagerank_surfer(
-    iter_limit_pr: int, conn: sqlite3.Connection, user_context, iter_limit: int, how_many: int):
-    
-    user_context_dois = [c.doi for c in user_context]
-    
-    surf_graph = create_subgraph()
+    iter_limit_pr: int, conn: sqlite3.Connection, user_context, iter_limit: int, how_many_results: int, sg_depth: int):
+        
+    surf_graph = SurfGraph(user_context, conn)
+    surf_graph.initialize_graph(sg_depth)
     
     for _ in range(iter_limit_pr):
-        random_surfer_iter(iter_limit=iter_limit, conn=conn, user_context=user_context, graph=surf_graph)
+        surf_graph.random_surf_iter(iter_limit)
     
-    dois_to_recom = []
-            
-    return dois_to_recom
+    return surf_graph.get_best_results(how_many_results)
             
 
 def init(article: Article, db_name):            
     conn = sqlite3.connect(db_name)
 
     user_context = [article]
-    dois_to_recom = pagerank_surfer(iter_limit=300, iter_limit_pr=2, conn=conn, user_context=user_context, how_many=10)
+    dois_to_recom = pagerank_surfer(
+        iter_limit=300, iter_limit_pr=2, conn=conn, user_context=user_context, how_many_results=10, sg_depth=5)
     print(dois_to_recom)
     conn.close()
