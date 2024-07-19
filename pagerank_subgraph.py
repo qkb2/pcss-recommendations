@@ -29,6 +29,7 @@ class SurfGraph:
     
     vertex_limit - max. no. of vertices (Article) that can be added to the graph
     '''
+    
     def __init__(self, user_context, conn: sqlite3.Connection, depth: int, vertex_limit: int) -> None:
         self.graph = dict()
         self.user_context = user_context
@@ -43,33 +44,26 @@ class SurfGraph:
         self.graph[article.doi] = []
         self.article_dict[article.doi] = article
         
-        query_small = """
-            SELECT a1.doi
-            FROM authored a1
-            WHERE a1.author IN (
-                SELECT a2.author
-                FROM authored a2
-                WHERE a2.doi = ? 
-            )
+        query_redundant = """
+            SELECT doi2, citations2
+            FROM connections
+            WHERE doi1 = ?
         """
             
-        cursor = self.conn.execute(query_small, (article.doi,))
+        cursor = self.conn.execute(query_redundant, (article.doi,))
         
         rows = cursor.fetchall()
         
         # add all author edges
         if rows is not None:
             for row in rows:
+                # if DOI doesn't exist add new article to dictionaries
                 if row[0] not in self.article_dict:
-                    cursor_inner = self.conn.execute(
-                        "SELECT title, citations FROM publications_citations WHERE doi = ?", (row[0],))
-                    row_inner = cursor_inner.fetchone()
-                    if row_inner is not None:
-                        nbr_article = Article(
-                            title=row_inner[0], doi=row[0], citations=int.from_bytes(row_inner[1], byteorder='little'))
-                        self.graph[article.doi].append(nbr_article)
-                        self.new_articles.append(nbr_article)
-                        self.article_dict[row[0]] = nbr_article
+                    nbr_article = Article(
+                        title=None, doi=row[0], citations=int.from_bytes(row[1], byteorder='little'))
+                    self.graph[article.doi].append(nbr_article)
+                    self.new_articles.append(nbr_article)
+                    self.article_dict[row[0]] = nbr_article
                 else:
                     nbr_article = self.article_dict[row[0]]
                     self.graph[article.doi].append(nbr_article)
