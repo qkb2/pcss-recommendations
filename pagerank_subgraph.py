@@ -10,6 +10,25 @@ class Article:
       
 # code is still too slow
 class SurfGraph:
+    '''
+    Class fields:
+    
+    graph - adjacency list, stored as a dict from doi (str) to list of articles (Article)
+    
+    user_context - list of articles (Article)
+    
+    conn - sqlite3 Connection
+    
+    article_dict - dict from doi (str) to Article (used for counting surfs)
+    
+    depth - assuming some vertex vj not in user context it must be true that
+    for some vertex vi in user context the shortest path from vi to vj satisfying
+    len(d) <= depth
+    
+    new_articles - list of articles (Articles) to add in next iteration
+    
+    vertex_limit - max. no. of vertices (Article) that can be added to the graph
+    '''
     def __init__(self, user_context, conn: sqlite3.Connection, depth: int, vertex_limit: int) -> None:
         self.graph = dict()
         self.user_context = user_context
@@ -19,6 +38,7 @@ class SurfGraph:
         self.new_articles = []
         self.vertex_limit = vertex_limit
         
+    # TODO: change to use merged db
     def add_article(self, article: Article):
         self.graph[article.doi] = []
         self.article_dict[article.doi] = article
@@ -54,11 +74,12 @@ class SurfGraph:
                     nbr_article = self.article_dict[row[0]]
                     self.graph[article.doi].append(nbr_article)
         
-    
-    # initialize subgraph to surf thru up to some level d, such that
-    # going from an article in context to any vertex not in user context
-    # requires at most d jumps
     def initialize_subgraph(self):
+        '''
+        Initializes the subgraph to surf thru up to some level d,
+        such that going from an article in context to any vertex
+        not in user context requires at most d jumps.
+        '''
         article_counter = 0
         for article in self.user_context:
             self.add_article(article)
