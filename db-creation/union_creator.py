@@ -21,11 +21,11 @@ conn.commit()
 
 cursor = conn.execute("SELECT COUNT(*) FROM publications_citations")
 row = cursor.fetchone()
-print(f"Total rows in connected table: {row}")
+print(f"Total rows in connected table: {row[0]}")
 
 # Close the connection
 conn.close()
 
 output_file = 'output.txt'
 with open(output_file, 'a') as f:
-    f.write(f"Total rows in connected table: {row}\n")
+    f.write(f"Total rows in connected table: {row[0]}\n")
