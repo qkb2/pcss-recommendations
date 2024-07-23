@@ -62,7 +62,7 @@ class SurfGraph:
         if rows is not None:
             for row in rows:
                 # if DOI doesn't exist add new article to dictionaries
-                if row[0] not in self.article_dict:
+                if row[0] not in self.graph:
                     nbr_article = Article(
                         title=None,
                         doi=row[0],
@@ -97,7 +97,7 @@ class SurfGraph:
                 self.add_article(article)
                 article_counter += 1
                 print(f"Article no. {article_counter} added")
-                if article_counter > self.vertex_limit:
+                if self.vertex_limit is not None and article_counter > self.vertex_limit:
                     is_at_limit = True
                     break
 
@@ -122,14 +122,29 @@ class SurfGraph:
                 curr_article = best_article
             else:
                 # jump to neighbor of current article with most citations
-                neighbors = self.graph[doi]
-                best_neighbor = neighbors[0]
-                curr_article = best_neighbor
+                neighbors = self.graph.get(doi, None)
+                if neighbors:
+                    best_neighbor = None
+                    for neighbor in neighbors:
+                        if self.graph.get(neighbor.doi, None):
+                            best_neighbor = neighbor
+                            break
+                    curr_article = best_neighbor
+                    if best_neighbor is None:
+                        curr_article = self.user_context[0]
 
     def get_best_results(self, amount: int):
         article_list = list(self.article_dict.values())
         article_list.sort(key=lambda x: x.rank, reverse=True)
-        return article_list[:amount]
+        to_name_list = article_list[:amount]
+        for article in to_name_list:
+            if article.title is None:
+                cursor = self.conn.execute(
+                    "SELECT title FROM publications_citations WHERE doi = ?", (article.doi,))
+                row = cursor.fetchone()
+                title = row[0]
+                article.title = title
+        return to_name_list
 
 
 def pagerank_surfer(
@@ -154,14 +169,16 @@ def init(article: Article, db_name):
     conn = sqlite3.connect(db_name)
 
     user_context = [article]
-    dois_to_recom = pagerank_surfer(
+    articles_to_recom = pagerank_surfer(
         iter_limit=300,
         iter_limit_pr=2,
         conn=conn,
         user_context=user_context,
         how_many_results=10,
         sg_depth=2,
-        vertex_limit=20,
+        vertex_limit=1000,
     )
-    print(dois_to_recom)
+    
+    for article in articles_to_recom:
+        print(article.title)
     conn.close()
