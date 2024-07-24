@@ -1,8 +1,8 @@
 import sqlite3
 
-conn = sqlite3.connect('recom_db2.db')
+conn = sqlite3.connect("recom_db2.db")
 
-conn.execute(f"""
+conn.execute("""
 CREATE TABLE IF NOT EXISTS publications_citations AS
 SELECT 
     publications.title, 
@@ -26,6 +26,6 @@ print(f"Total rows in connected table: {row[0]}")
 # Close the connection
 conn.close()
 
-output_file = 'output.txt'
-with open(output_file, 'a') as f:
+output_file = "output.txt"
+with open(output_file, "a") as f:
     f.write(f"Total rows in connected table: {row[0]}\n")

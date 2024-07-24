@@ -1,23 +1,21 @@
 import sqlite3
+import params
 
-conn = sqlite3.connect('recom_db2.db')
+conn = sqlite3.connect("recom_db2.db")
 cursor = conn.cursor()
 
-doi_max_len = 50
-author_max_len = 50
-
-cursor.execute(f'''
+cursor.execute(f"""
 CREATE TABLE IF NOT EXISTS connections (
-    doi1 VARCHAR({doi_max_len}),
-    citations1 INT,
-    doi2 VARCHAR({doi_max_len}),
-    citations2 INT,
+    doi1 VARCHAR({params.doi_max_len}),
+    citations1 INT({params.citations_max_len}),
+    doi2 VARCHAR({params.doi_max_len}),
+    citations2 INT({params.citations_max_len}),
     PRIMARY KEY(doi1, doi2)
 )
-''')
+""")
 
 # Populate connections table
-cursor.execute('''
+cursor.execute("""
 INSERT INTO connections (doi1, citations1, doi2, citations2)
 SELECT 
     pc1.doi AS doi1, 
@@ -34,7 +32,7 @@ JOIN
     publications_citations pc2 ON a2.doi = pc2.doi
 WHERE 
     pc1.doi <> pc2.doi
-''')
+""")
 
 conn.commit()
 
@@ -45,6 +43,6 @@ print(f"Total rows in connections (edges) table: {row[0]}")
 # Close the connection
 conn.close()
 
-output_file = 'output.txt'
-with open(output_file, 'a') as f:
+output_file = "output.txt"
+with open(output_file, "a") as f:
     f.write(f"Total rows in connections (edges) table: {row[0]}")

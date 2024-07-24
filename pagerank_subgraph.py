@@ -46,9 +46,9 @@ class SurfGraph:
 
     def add_article(self, article: Article):
         """
-        Adds article to graph - articles adjacent to the article to add 
+        Adds article to graph - articles adjacent to the article to add
         will be added to a list of neighbors of article in self.graph
-        
+
         Args:
             article: Article - article to be added
         """
@@ -95,7 +95,7 @@ class SurfGraph:
             print(f"Article no. {article_counter} added")
 
         is_at_limit = False
-        
+
         # outer loop guarantees the d jumps assumption
         for _ in range(self.depth):
             # copy so that the new_articles list can be cleared and used in the inner loop
@@ -103,13 +103,16 @@ class SurfGraph:
             self.new_articles.clear()
             if is_at_limit:
                 break
-            
+
             # inner loop adds new articles and enforces vertex_limit assumption
             for article in articles_in_this_iter:
                 self.add_article(article)
                 article_counter += 1
                 print(f"Article no. {article_counter} added")
-                if self.vertex_limit is not None and article_counter > self.vertex_limit:
+                if (
+                    self.vertex_limit is not None
+                    and article_counter > self.vertex_limit
+                ):
                     is_at_limit = True
                     break
 
@@ -174,7 +177,9 @@ class SurfGraph:
         for article in to_name_list:
             if article.title is None:
                 cursor = self.conn.execute(
-                    "SELECT title FROM publications_citations WHERE doi = ?", (article.doi,))
+                    "SELECT title FROM publications_citations WHERE doi = ?",
+                    (article.doi,),
+                )
                 row = cursor.fetchone()
                 title = row[0]
                 article.title = title
@@ -233,7 +238,7 @@ def init(article: Article, db_name):
         sg_depth=2,
         vertex_limit=1000,
     )
-    
+
     for article in articles_to_recom:
         print(article.title)
     conn.close()
