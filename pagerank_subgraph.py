@@ -121,13 +121,15 @@ class SurfGraph:
             neighbors = self.graph[key]
             neighbors.sort(key=lambda x: x.citations, reverse=True)
 
-    def random_surf_iter(self, iter_limit: int, d=0.85):
+    def random_surf_iter(self, iter_limit: int, d=0.85, make_random=True, best_nbr_limit=10):
         """Surfs over the graph up to iter_limit times, i.e.
         there is up to iter_limit jumps/surfs in this iteration.
 
         Args:
             iter_limit (int): how many times the surfer can move on a graph or jump to non-related edge in user context.
             d (float, optional): probability for surfer to go from neighbor to neighbor instead of jumping (1-d). Defaults to 0.85.
+            make_random (Bool, optional): should the algorithm be randomized. Defaults to True.
+            best_nbr_limit(int, optional): how many best neighbors to consider. Defaults to 10.
         """
         curr_article = self.user_context[-1]
         for _ in range(iter_limit):
@@ -138,29 +140,37 @@ class SurfGraph:
             p = random.uniform(0, 1)
             if p > d:
                 # jump (find from context)
-                best_article = self.user_context[0]
-                for article in self.user_context:
-                    if article.citations > best_article.citations:
-                        best_article = article
-                curr_article = best_article
+                curr_article = random.choice(self.user_context)
             else:
                 # jump to neighbor of current article with most citations
                 neighbors = self.graph.get(doi, None)
                 # if neighbor is not in the graph then it's meaningless to try to jump to them
                 # (this can happen if we enforce vertex_limit and some vertices don't get added etc.)
                 if neighbors:
-                    best_neighbor = None
+                    best_neighbors = []
+                    weights = []
+                    curr_weight = 1
                     for neighbor in neighbors:
                         # check if this neighbor exists in graph
                         # first existent neighbor is the best because of previous sorting
                         if self.graph.get(neighbor.doi, None):
-                            best_neighbor = neighbor
-                            break
-                    curr_article = best_neighbor
+                            best_neighbors.append(neighbor)
+                            weights.append(curr_weight)
+                            curr_weight = curr_weight / 2
+                            if len(best_neighbors) >= best_nbr_limit or not make_random:
+                                break
                     # handling situation where the was no best neighbor at all
                     # (I think it shouldn't really happen? But it doesn't change that much)
-                    if best_neighbor is None:
-                        curr_article = self.user_context[0]
+                    if len(best_neighbors) == 0:
+                        curr_article = random.choice(self.user_context)
+                    # if the algorithm is to be randomized assuming exponential weights (could also be harmonic?)
+                    elif make_random:
+                        curr_article = random.choices(best_neighbors, weights=weights)[0]
+                    # non-random option for existant neighbor
+                    else:
+                        curr_article = best_neighbors[0]
+                else:
+                    curr_article = random.choice(self.user_context)
 
     def get_best_results(self, amount: int):
         """Get a list of articles (Article) with the best score from PageRank surfing.
@@ -236,9 +246,9 @@ def init(article: Article, db_name):
         user_context=user_context,
         how_many_results=10,
         sg_depth=2,
-        vertex_limit=1000,
+        vertex_limit=300,
     )
 
     for article in articles_to_recom:
-        print(article.title)
+        print(article.doi, article.title)
     conn.close()
