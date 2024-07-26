@@ -92,7 +92,7 @@ class SurfGraph:
         for article in self.user_context:
             self.add_article(article)
             article_counter += 1
-            print(f"Article no. {article_counter} added")
+            # print(f"Article no. {article_counter} added")
 
         is_at_limit = False
 

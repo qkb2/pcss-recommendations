@@ -1,0 +1,64 @@
+10.1089/10665270050081478 A Greedy Algorithm for Aligning DNA Sequences. 3866
+10.1093/bioinformatics/4.1.11 Optimal alignments in linear space. 1017
+10.1093/nar/gkn741 Database resources of the National Center for Biotechnology Information. 815
+10.1093/nar/gkg033 Database resources of the National Center for Biotechnology. 802
+10.1093/nar/gkm1000 Database resources of the National Center for Biotechnology Information. 756
+10.1137/0222058 Suffix Arrays: A New Method for On-Line String Searches. 1166
+10.1093/bioinformatics/btn604 CleaveLand: a pipeline for using degradome data to find cleaved small RNA targets. 521
+10.1093/nar/gkl1031 Database resources of the National Center for Biotechnology Information. 753
+10.1089/cmb.1997.4.311 Improved Splice Site Detection in Genie. 1474
+10.1093/bioinformatics/16.10.906 Support vector machine classification and validation of cancer tissue samples using microarray expression 
+data. 1853
+A Greedy Algorithm for Aligning DNA Sequences.
+Time taken: 2.4815175s
+10.1093/bioinformatics/btn604 CleaveLand: a pipeline for using degradome data to find cleaved small RNA targets. 521
+10.1089/10665270050081478 A Greedy Algorithm for Aligning DNA Sequences. 3866
+10.1093/bioinformatics/4.1.11 Optimal alignments in linear space. 1017
+10.1038/nature14248 Integrative analysis of 111 reference human epigenomes Open. 5242
+10.1093/bioinformatics/16.10.906 Support vector machine classification and validation of cancer tissue samples using microarray expression 
+data. 1853
+10.1137/0222058 Suffix Arrays: A New Method for On-Line String Searches. 1166
+10.1089/cmb.1997.4.311 Improved Splice Site Detection in Genie. 1474
+10.1093/nar/gkm966 The UCSC Genome Browser Database: 2008 update. 438
+10.1371/journal.pcbi.0020033 Identification and Classification of Conserved RNA Secondary Structures in the Human Genome. 430
+10.1038/nature25473 The genome of  183
+CleaveLand: a pipeline for using degradome data to find cleaved small RNA targets.
+Time taken: 2.3729953s
+10.1089/10665270050081478 A Greedy Algorithm for Aligning DNA Sequences. 3866
+10.1093/bioinformatics/4.1.11 Optimal alignments in linear space. 1017
+10.1093/bioinformatics/btn604 CleaveLand: a pipeline for using degradome data to find cleaved small RNA targets. 521
+10.1093/nar/gkn741 Database resources of the National Center for Biotechnology Information. 815
+10.1093/nar/gkg033 Database resources of the National Center for Biotechnology. 802
+10.1137/0222058 Suffix Arrays: A New Method for On-Line String Searches. 1166
+10.1093/nar/gkm1000 Database resources of the National Center for Biotechnology Information. 756
+10.1093/nar/gkl1031 Database resources of the National Center for Biotechnology Information. 753
+10.1093/nar/gkm966 The UCSC Genome Browser Database: 2008 update. 438
+10.1038/nature14248 Integrative analysis of 111 reference human epigenomes Open. 5242
+A Greedy Algorithm for Aligning DNA Sequences.
+CleaveLand: a pipeline for using degradome data to find cleaved small RNA targets.
+Time taken: 2.3732951s
+10.1186/1471-2105-5-113 MUSCLE: a multiple sequence alignment method with reduced time and space complexity. 6819
+10.1093/bioinformatics/btq461 Search and clustering orders of magnitude faster than BLAST. 16241
+10.1093/bioinformatics/btr381 UCHIME improves sensitivity and speed of chimera detection. 11428
+10.1093/bioinformatics/btv401 Error filtering, pair assembly and error correction for next-generation sequencing reads. 881
+10.1093/bioinformatics/bty113 Updating the 97% identity threshold for 16S ribosomal RNA OTUs. 431
+10.1093/bioinformatics/btp636 PyNAST: a flexible tool for aligning sequences to a template alignment. 2941
+10.1186/1471-2105-12-38 Removing Noise From Pyrosequenced Amplicons. 1235
+10.1186/1471-2105-7-371 UniFrac - An online tool for comparing microbial community diversity in a phylogenetic context. 1226
+10.1093/bioinformatics/bth090 A comparison of scoring functions for protein sequence profile alignment. 105
+10.1186/1471-2105-8-18 PILER-CR: Fast and accurate identification of CRISPR repeats. 277
+MUSCLE: a multiple sequence alignment method with reduced time and space complexity.
+Time taken: 2.5219107s
+10.1093/bioinformatics/bts680 A beta-mixture quantile normalization method for correcting probe design bias in Illumina Infinium 450 k DNA 
+methylation data. 1185
+10.1093/bib/bbv056 Normalization of circulating microRNA expression data obtained by quantitative real-time RT-PCR. 199
+10.1007/s00422-006-0139-8 Neuronal firing rates account for distractor effects on mnemonic accuracy in a visuo-spatial working memory task. 17
+10.1016/j.ijar.2006.06.008 Towards scalable and data efficient learning of Markov boundaries. 131
+10.1007/s00422-002-0363-9 The dynamical stability of reverberatory neural circuits. 130
+10.1038/nature12160 The importance of mixed selectivity in complex cognitive tasks. 1155
+10.1162/neco.1992.4.1.84 Alternating and Synchronous Rhythms in Reciprocally Inhibitory Model Neurons. 461
+10.1162/jocn.2007.19.5.750 Stronger Synaptic Connectivity as a Mechanism behind Development of Working Memory-related Brain Activity during Childhood. 95
+10.1371/journal.pcbi.1004792 Training Excitatory-Inhibitory Recurrent Neural Networks for Cognitive Tasks: A Simple and Flexible Framework. 186
+10.1007/s00422-002-0358-6 Spike-timing-dependent plasticity: common themes and divergent vistas. 86
+Neuronal firing rates account for distractor effects on mnemonic accuracy in a visuo-spatial working memory task.
+Time taken: 2.5043566s
