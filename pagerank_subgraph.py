@@ -108,7 +108,7 @@ class SurfGraph:
             for article in articles_in_this_iter:
                 self.add_article(article)
                 article_counter += 1
-                print(f"Article no. {article_counter} added")
+                # print(f"Article no. {article_counter} added")
                 if (
                     self.vertex_limit is not None
                     and article_counter > self.vertex_limit
@@ -229,16 +229,15 @@ def pagerank_surfer(
     return surf_graph.get_best_results(how_many_results)
 
 
-def init(article: Article, db_name):
+def init(user_context, db_name):
     """For simple testing. Large values of sg_depth not recommended.
 
     Args:
-        article (Article): article in user context
+        user_context (list<Article>): article in user context
         db_name (_type_): sqlite db to connect to
     """
     conn = sqlite3.connect(db_name)
 
-    user_context = [article]
     articles_to_recom = pagerank_surfer(
         iter_limit=300,
         iter_limit_pr=2,
@@ -250,5 +249,5 @@ def init(article: Article, db_name):
     )
 
     for article in articles_to_recom:
-        print(article.doi, article.title)
+        print(article.doi, article.title, article.citations)
     conn.close()

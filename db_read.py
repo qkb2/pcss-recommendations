@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('recom_db2.db')
+conn = sqlite3.connect('recom_db3.db')
 
 # Query all records from the publications_citations table
 cursor = conn.execute("SELECT * FROM publications_citations")
